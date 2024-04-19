@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
     function searchWeather() {
         const cityName = cityInput.value.trim().toLowerCase();
-        const cityData = weatherData.find(data => data.city.toLowerCase() === cityName);
+        const cityData = weatherData.find(info => info.city.toLowerCase() === cityName);
         
         if (cityData) {
             displayWeather(cityData);
@@ -25,26 +25,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
    
-    function displayWeather(data) {
+    function displayWeather(info) {
         weatherInfo.innerHTML = "";
 
         const weatherCard = document.createElement("div");
         weatherCard.classList.add("weather-card");
 
         const cityName = document.createElement("h2");
-        cityName.textContent = data.city;
+        cityName.textContent = info.city;
 
         const temperature = document.createElement("p");
-        temperature.textContent = `Temperature: ${data.temperature}°C`;
+        temperature.textContent = `Temperature: ${info.temperature}°C`;
 
         const description = document.createElement("p");
-        description.textContent = `Description: ${data.description}`;
+        description.textContent = `Description: ${info.description}`;
 
         const humidity = document.createElement("p");
-        humidity.textContent = `Humidity: ${data.humidity}%`;
+        humidity.textContent = `Humidity: ${info.humidity}%`;
 
         const windSpeed = document.createElement("p");
-        windSpeed.textContent = `Wind Speed: ${data.wind_speed} m/s`;
+        windSpeed.textContent = `Wind Speed: ${info.wind_speed} m/s`;
 
         weatherCard.appendChild(cityName);
         weatherCard.appendChild(temperature);
