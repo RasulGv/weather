@@ -1,62 +1,61 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const weatherData = [
-        { city: "Ankara", temperature: 15, description: "Partly Cloudy", humidity: 50, wind_speed: 3, img:"https://s7g10.scene7.com/is/image/accorhotels/GettyImages-1294795577:8by10?wid=412&hei=515&dpr=on,2.625&qlt=75&resMode=sharp2&op_usm=0.5,0.3,2,0&iccEmbed=true&icc=sRGB" },
-        { city: "Baku", temperature: 20, description: "Sunny", humidity: 40, wind_speed: 5, img:"https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/39/a5/a7.jpg" },
-        { city: "Berlin", temperature: 5, description: "Overcast", humidity: 60, wind_speed: 2, img:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Museumsinsel_Berlin_Juli_2021_1_%28cropped%29.jpg/1200px-Museumsinsel_Berlin_Juli_2021_1_%28cropped%29.jpg" }
-    ];
-   
-    const weatherInfo = document.getElementById("weatherInfo");
-    const cityInput = document.getElementById("cityInput");
-    const searchButton = document.getElementById("searchButton");
+const apiKey = 'd98ffdeaebb5600658f6d76482d1f63e';
+const cityInput = document.getElementById('cityInput');
+const cityInfoCardContainer = document.getElementById('cityInfoCardContainer');
 
-   
-    searchButton.addEventListener("click", searchWeather);
+let previousCity = null; 
 
-    
-    function searchWeather() {
-        const cityName = cityInput.value.trim().toLowerCase();
-        const cityData = weatherData.find(info => info.city.toLowerCase() === cityName);
-        
-        if (cityData) {
-            displayWeather(cityData);
-        } else {
-            weatherInfo.innerHTML = "City not found!";
+async function fetchCityInfo(cityName) {
+    try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=${apiKey}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error status: ${response.status}`);
         }
+        const data = await response.json();
+        const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+
+       
+        if (previousCity !== cityName) {
+            cityInfoCardContainer.innerHTML = ''; 
+            previousCity = cityName; 
+        }
+
+        const card = document.createElement('div');
+        card.className = 'city-info-card';
+
+        const currentTime = new Date();
+        const timezoneOffset = data.timezone;
+        const localTime = new Date(currentTime.getTime() + timezoneOffset * 60000);
+        card.innerHTML = `
+            <div class="weather-info">
+                <img src="${iconUrl}" alt="Weather Icon" /> <!-- Hava durumu ikonu -->
+                <h2>${data.name}</h2> <!-- Şehir adı -->
+                <p><i class="wi wi-thermometer"></i> Temperature: ${data.main.temp}°C</p>
+                <p><i class="wi wi-humidity"></i> Humidity: ${data.main.humidity}%</p>
+                <p><i class="wi wi-barometer"></i> Pressure: ${data.main.pressure} hPa</p>
+                <p><i class="wi wi-wind"></i> Wind Speed: ${data.wind.speed} m/s</p>
+                <p><i class="wi wi-${data.weather[0].icon}"></i> Description: ${data.weather[0].description}</p>
+                <p>Current Time: ${localTime.toLocaleTimeString()}</p>
+            </div>
+        `;
+
+        cityInfoCardContainer.appendChild(card);
+    } catch (err) {
+        console.log(err);
     }
+}
 
-   
-    function displayWeather(info) {
-        weatherInfo.innerHTML = "";
 
-        const weatherCard = document.createElement("div");
-        weatherCard.classList.add("weather-card");
 
-        const cityName = document.createElement("h2");
-        cityName.textContent = info.city;
+function searchFunction() {
+    const cityName = cityInput.value;
+    fetchCityInfo(cityName);
+}
 
-        const temperature = document.createElement("p");
-        temperature.textContent = `Temperature: ${info.temperature}°C`;
 
-        const description = document.createElement("p");
-        description.textContent = `Description: ${info.description}`;
 
-        const humidity = document.createElement("p");
-        humidity.textContent = `Humidity: ${info.humidity}%`;
-
-        const windSpeed = document.createElement("p");
-        windSpeed.textContent = `Wind Speed: ${info.wind_speed} m/s`;
-
-        const image=document.createElement("img");
-        image.src=info.img;
-        image.alt=`${info.city} Weather`;
-
-        weatherCard.appendChild(cityName);
-        weatherCard.appendChild(temperature);
-        weatherCard.appendChild(description);
-        weatherCard.appendChild(humidity);
-        weatherCard.appendChild(windSpeed);
-        weatherCard.appendChild(image);
-
-        weatherInfo.appendChild(weatherCard);
+cityInput.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        searchFunction();
     }
 });
