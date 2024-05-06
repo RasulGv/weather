@@ -27,7 +27,7 @@ async function fetchCityInfo(cityName) {
         const localTime = new Date(currentTime.getTime() + timezoneOffset * 60000);
         card.innerHTML = `
             <div class="weather-info">
-                <img src="${iconUrl}" alt="Weather Icon" /> <!-- Hava durumu ikonu -->
+                <img src="${iconUrl}" alt="Weather Icon" /> 
                 <h2>${data.name}</h2> <!-- Şehir adı -->
                 <p><i class="wi wi-thermometer"></i> Temperature: ${data.main.temp}°C</p>
                 <p><i class="wi wi-humidity"></i> Humidity: ${data.main.humidity}%</p>
