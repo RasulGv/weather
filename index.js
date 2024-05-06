@@ -12,7 +12,7 @@ async function fetchCityInfo(cityName) {
         }
         const data = await response.json();
         const iconUrl = `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
-
+        console.log(data);
        
         if (previousCity !== cityName) {
             cityInfoCardContainer.innerHTML = ''; 
