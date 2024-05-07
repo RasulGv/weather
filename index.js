@@ -23,18 +23,19 @@ async function fetchCityInfo(cityName) {
         card.className = 'city-info-card';
 
         const currentTime = new Date();
-        const timezoneOffset = data.timezone;
-        const localTime = new Date(currentTime.getTime() + timezoneOffset * 60000);
+        const utcTime = new Date(currentTime.getTime() + (data.timezone * 1000));
+        const localTime = utcTime.toLocaleTimeString();
+
         card.innerHTML = `
             <div class="weather-info">
                 <img src="${iconUrl}" alt="Weather Icon" /> 
-                <h2>${data.name}</h2> <!-- Şehir adı -->
+                <h2>${data.name}</h2> 
                 <p><i class="wi wi-thermometer"></i> Temperature: ${data.main.temp}°C</p>
                 <p><i class="wi wi-humidity"></i> Humidity: ${data.main.humidity}%</p>
                 <p><i class="wi wi-barometer"></i> Pressure: ${data.main.pressure} hPa</p>
                 <p><i class="wi wi-wind"></i> Wind Speed: ${data.wind.speed} m/s</p>
                 <p><i class="wi wi-${data.weather[0].icon}"></i> Description: ${data.weather[0].description}</p>
-                <p>Current Time: ${localTime.toLocaleTimeString()}</p>
+                <p>Current Time: ${localTime}</p>
             </div>
         `;
 
